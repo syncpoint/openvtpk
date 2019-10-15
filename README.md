@@ -15,3 +15,39 @@ Austria's government publishes detailed geospatial data like tiles, elevation da
 ## What to expect
 
 OpenVTPK is a _proof of concept_ to repackage vector tiles into MBTiles container. This software is __not production ready__. Instead it should be treated as a common ground to start discussion about the usage of open date with open (source) software.
+
+Some of the information provided in the source code is hard coded to _basemap.at_. If you want to use the code otherwise you need to change these values accordingly.
+
+## What to do before running openvtpk
+
+VTPK packages are zipped archives. One can unzip them by using your favorite software like 7z.
+
+OpenVTPK expects the VTPK package to be unzipped into a folder of your choice. Please change the folder name in the source code to meet your target.
+
+## What you get
+
+Running ```node ./index.js``` will
+* create a MBTiles container named ```basemap.at.mbtiles```
+* extract the vector tiles from the VTPK folder
+* read the first tile per zoom level in order to extract the layer names
+* write the tiles to the MBTiles container
+* write metadata to the MBTiles container
+
+The ```basemap.at.mbtiles``` will have a size of 2.7 GByte.
+
+## What is missing
+
+* Styling the vector tiles is not included yet
+
+## How to view the tiles
+
+Please use your favorite tile server to view the basemap.at tiles offline. An easy-to-use option may be (@mapbox/mbview)[https://github.com/mapbox/mbview]. Just clone the repository and start the tile server
+
+```javascript
+node ./cli.js PATH_TO_YOUR/basemap.at.mbtiles
+```
+
+Open your browser and be a little patient:
+
+![Offline vector basemap](openvtpk-basemap.jpg)
+
