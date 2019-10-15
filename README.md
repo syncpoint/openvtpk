@@ -41,7 +41,10 @@ The ```basemap.at.mbtiles``` will have a size of 2.7 GByte.
 
 ## How to view the tiles
 
-Please use your favorite tile server to view the basemap.at tiles offline. An easy-to-use option may be [@mapbox/mbview](https://github.com/mapbox/mbview). Just clone the repository and start the tile server
+Please use your favorite tile server to view the basemap.at tiles offline. 
+
+### nodejs server
+An easy-to-use option may be [@mapbox/mbview](https://github.com/mapbox/mbview). Just clone the repository and start the tile server
 
 ```javascript
 node ./cli.js PATH_TO_YOUR/basemap.at.mbtiles
@@ -51,3 +54,13 @@ Open your browser and be a little patient:
 
 ![Offline vector basemap](openvtpk-basemap.jpg)
 
+### Docker container klokantech/tileserver-gl
+If you prefer using a docker container _tileserver-gl_ can be a good start. Run the following command to start the container within the folder where you stored the mbtiles file:
+
+```bash
+docker run --rm -it -v $(pwd):/data -p 8080:80 klokantech/tileserver-gl
+```
+
+Open your browser and visit ```http://localhost:8080```:
+
+![interactive basemap](interactive-basemap.jpg)
