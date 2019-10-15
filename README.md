@@ -10,11 +10,11 @@ In the first run repackaging from VTPK to MBTiles is supported.
 
 ## Motivation
 
-Austria's government publishes detailed geospatial data like tiles, elevation data etc. on [data.gv.at](https://www.data.gv.at/?s=basemap.at). One can find vector tiles for the [region of Austria](https://www.data.gv.at/katalog/dataset/a73befc7-575f-48cb-8eb9-b05172a8c9e3) in order to use them offline. The publishing format ist VTPK.
+Austria's government publishes detailed geospatial data like tiles, elevation data etc. at [data.gv.at](https://www.data.gv.at/?s=basemap.at). One can find vector tiles for the [region of Austria](https://www.data.gv.at/katalog/dataset/a73befc7-575f-48cb-8eb9-b05172a8c9e3) in order to use them offline. The publishing format ist VTPK.
 
 ## What to expect
 
-OpenVTPK is a _proof of concept_ to repackage vector tiles into MBTiles container. This software is __not production ready__. Instead it should be treated as a common ground to start discussion about the usage of open date with open (source) software.
+OpenVTPK is a _proof of concept_ to repackage vector tiles into a MBTiles container. This software is __not production ready__. Instead it should be treated as a common ground to start discussion about the usage of open data with open (source) software.
 
 Some of the information provided in the source code is hard coded to _basemap.at_. If you want to use the code otherwise you need to change these values accordingly.
 
@@ -31,7 +31,7 @@ Running ```node ./index.js``` will
 * extract the vector tiles from the VTPK folder
 * read the first tile per zoom level in order to extract the layer names
 * write the tiles to the MBTiles container
-* write metadata to the MBTiles container
+* write metadata (including the layer names extracted previously) to the MBTiles container
 
 The ```basemap.at.mbtiles``` will have a size of 2.7 GByte.
 
@@ -41,7 +41,7 @@ The ```basemap.at.mbtiles``` will have a size of 2.7 GByte.
 
 ## How to view the tiles
 
-Please use your favorite tile server to view the basemap.at tiles offline. An easy-to-use option may be (@mapbox/mbview)[https://github.com/mapbox/mbview]. Just clone the repository and start the tile server
+Please use your favorite tile server to view the basemap.at tiles offline. An easy-to-use option may be [@mapbox/mbview](https://github.com/mapbox/mbview). Just clone the repository and start the tile server
 
 ```javascript
 node ./cli.js PATH_TO_YOUR/basemap.at.mbtiles
