@@ -1,0 +1,23 @@
+{
+  "name": "openvtpk",
+  "version": "0.1.0",
+  "description": "transforms ESRI's VTPK packages into open specification packages",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "VTPK"
+  ],
+  "author": "Syncpoint GmbH (http://syncpoint.io)",
+  "license": "MIT",
+  "dependencies": {
+    "@mapbox/mbtiles": "^0.11.0",
+    "@mapbox/vector-tile": "^1.3.1",
+    "@mapbox/vtinfo": "^0.1.2",
+    "@syncpoint/compact-cache-bundle": "^0.2.0",
+    "bluebird": "^3.7.0",
+    "pbf": "^3.2.0",
+    "zlib": "^1.0.5"
+  }
+}
