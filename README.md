@@ -33,11 +33,7 @@ Running ```node ./index.js``` will
 * write the tiles to the MBTiles container
 * write metadata (including the layer names extracted previously) to the MBTiles container
 
-The ```basemap.at.mbtiles``` will have a size of 2.7 GByte.
-
-## What is missing
-
-* Styling the vector tiles is not included yet
+Running OpenVTPK will take a view minutes an the resulting  ```basemap.at.mbtiles``` will have a size of 2.7 GByte.
 
 ## How to view the tiles
 
@@ -64,3 +60,11 @@ docker run --rm -it -v $(pwd):/data -p 8080:80 klokantech/tileserver-gl
 Open your browser and visit ```http://localhost:8080```:
 
 ![interactive basemap](interactive-basemap.jpg)
+
+### Styling the basemap
+
+The provided VTPK container also includes a style file. The current way OpenVTPK extracts the layer names does not fully match the ones used in the style file.
+
+After some modifications I was able to apply the style provided by _basemap.at_ using _tileserver-gl_:
+
+![styled basemap](styled-basemap.jpg)
