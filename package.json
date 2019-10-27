@@ -1,6 +1,6 @@
 {
   "name": "openvtpk",
-  "description": "inspect and dransform vector tile packages",
+  "description": "inspect and transform vector tile packages",
   "version": "0.2.0",
   "author": "thomas.halwax@syncpoint.io",
   "bin": {
@@ -25,11 +25,10 @@
     "eslint": "^5.16.0",
     "eslint-config-oclif": "^3.1.0",
     "globby": "^10.0.1",
-    "mocha": "^5.2.0",
-    "nyc": "^13.3.0"
+    "mocha": "^5.2.0"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   },
   "files": [
     "/bin",
