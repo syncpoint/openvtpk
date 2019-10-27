@@ -1,32 +1,24 @@
 'use strict'
 
-const fs = require('fs')
-const path = require('path')
-const { Command, flags } = require('@oclif/command')
-const MBTiles = require('@mapbox/mbtiles')
-const Promise = require('bluebird')
-const bundle = require('@syncpoint/compact-cache-bundle')
 
-const params = require('../shared/params')
-const inspect = require('../shared/inspect')
+const bundle = require('@syncpoint/compact-cache-bundle')
+const { Command } = require('@oclif/command')
+const fs = require('fs')
+const MBTiles = require('@mapbox/mbtiles')
+const Pbf = require('pbf')
+const Promise = require('bluebird')
+const VectorTile = require('@mapbox/vector-tile').VectorTile
+
 const content = require('../shared/content')
+const inspect = require('../shared/inspect')
 const levels = require('../shared/levels')
+const params = require('../shared/params')
+const root = require('../shared/root')
 
 const fsOpen = Promise.promisify(fs.open)
 const fsClose = Promise.promisify(fs.close)
+const gunzip = Promise.promisify(require('zlib').gunzip)
 
-const buildMBTilesName = (sourceFolder) => {
-    try {
-        const rootFileName = path.join(sourceFolder, 'p12', 'root.json')
-        const rootFile = fs.readFileSync(rootFileName)
-        const root = JSON.parse(rootFile)
-        return `${root.name}.mbtiles`
-    }
-    catch (error) {
-        console.error(error)
-        return `${Date.now()}.mbtiles`
-    }
-}
 
 const createMBTileContainer = (filepath, mode = 'rwc') => {
     return new Promise((resolve, reject) => {
@@ -41,7 +33,70 @@ const createMBTileContainer = (filepath, mode = 'rwc') => {
     })
 }
 
+/**
+ * 
+ * @param {Buffer} tileBuffer a buffer representing an gzip compressed Mapbox vector tile
+ * @returns {Array[String]} the name of the layers that are used by the vector tile
+ */
+const exploreLayers = async (tileBuffer) => {
+    const uncompressedTile = await gunzip(tileBuffer)
+    const protoBuffer = new Pbf(uncompressedTile)
+    const tile = new VectorTile(protoBuffer)
+    const layers = Object.keys(tile.layers)
+    return layers
+}
+
+/**
+ * 
+ * @param {Set} setOfLayers a set that contains all the layers
+ * @returns {Array} 
+ */
+const toVectorLayers = (setOfLayers) => {
+    const vectorLayers = []
+
+    for (let layer of setOfLayers) {
+        vectorLayers.push({
+            id: layer,
+            fields: {}
+        })
+    }
+    return vectorLayers
+}
+
+/**
+ * 
+ * @param {JSON} rootData the tile root information
+ * @param {Object} levels zoom levels that are transformed into the MBTiles container
+ * @param {Set[String]} layers the layers used in the vector tiles
+ * @returns {Object} contains the metadata required by the MBTiles container
+ */
+const tilesetInfo = (rootData, levels, layers) => {
+    const info = {
+        "name": rootData.name,
+        "format": "pbf",
+        "version": rootData.currentVersion || 1,
+        "minzoom": levels.min,
+        "maxzoom": levels.max,
+        "type": "overlay",
+        "json": `{"vector_layers":  ${JSON.stringify(toVectorLayers(layers))}}`
+    }
+    return info
+}
+
+/*  this is considered bad practice because a command should never
+    return some data
+
+    TODO: re-design the application in order to read the
+    layer metadata in a more clever way
+
+*/
+/** 
+ * @returns: {Set} a set of layers that are collected from the tiles
+ * @todo: re-design the application in order to read the
+    layer metadata in a more clever way
+ * */
 const writeBundles = async (tileContainer, level) => {
+    let bundleLayers = new Set()
     const allBundles = content.enumerateBundles(level.folder)
     for (const bundlePath of allBundles) {
         console.log(`processing ${bundlePath}`)
@@ -50,46 +105,54 @@ const writeBundles = async (tileContainer, level) => {
         const tileIndex = await bundle.tileIndex(bundleFileDescriptor)
         for (const index of tileIndex) {
             const tile = await bundle.tiles(bundleFileDescriptor, index)
+            // write tile to tile container
             const row = bundleOffset.rowOffset + index.row
             const column = bundleOffset.columnOffset + index.column
             await tileContainer.putTileAsync(level.z, column, row, tile)
+            // read layer information from tile 
+            const tileLayers = await exploreLayers(tile)
+            bundleLayers = new Set([...bundleLayers, ...tileLayers])
         }
 
         await fsClose(bundleFileDescriptor)
     }
+    return bundleLayers
 }
 
-const writeTiles = async (tileContainer, levels) => {
+/**
+ * 
+ * @param {MBTiles object} tileContainer a writeable object that represents a Mapbox tiles container (MBTiles)
+ * @param {Array[Object]} levels the levels objects that should be transformed
+ * @returns {Set[String]} contains the names of all layers that are used by the transformed vector tiles
+ */
+const doWrite = async (tileContainer, levels) => {
+    let layers = new Set()
     for (const level of levels) {
         console.log(`processing level ${level.z}`)
-        await writeBundles(tileContainer, level)
+        const bundleLayers = await writeBundles(tileContainer, level)
+        layers = new Set([...layers, ...bundleLayers])
     }
+    return layers
 }
 
-const readLayerInfo = level => {
-    const allBundles = content.enumerateBundles(level.folder)
-    for (const bundlePath of allBundles) {
-
-    }
-}
-
-const writeMetadata = async (tileContainer, levels) => {
-    for (const level of levels) {
-        await readLayerInfo(level)
-    }
-}
-
+/**
+ * 
+ * @param {String} sourceFolder the path to the expanded VTPK folder
+ * @param {Object} inspection contains data about the available zoom levels
+ */
 const doTransform = async (sourceFolder, inspection) => {
     // restrict the zoom levels to the given boundarys
     const levelsToProcess = inspection.levels.filter(level => (level.z >= inspection.processingLevels.min && level.z <= inspection.processingLevels.max))
 
-    const mbtilesName = buildMBTilesName(sourceFolder)
+    const tileRoot = root(sourceFolder)
+    const mbtilesName = `${tileRoot.name}.mbtiles`
     console.log(`creating MBTiles container ${mbtilesName}`)
     try {
         const tileContainer = await createMBTileContainer(mbtilesName)
         await tileContainer.startWritingAsync()
-        await writeTiles(tileContainer, levelsToProcess)
-        await writeMetadata(tileContainer, levelsToProcess)
+        // BAD PRACTICE, should NOT read and write with a single function
+        const layers = await doWrite(tileContainer, levelsToProcess)
+        await tileContainer.putInfoAsync(tilesetInfo(tileRoot, inspection.processingLevels, layers))
         await tileContainer.stopWritingAsync()
     }
     catch (error) {
@@ -110,12 +173,11 @@ class TransformCommand extends Command {
             this.error(inspection.compliance.error)
             this.exit(1)
         }
+
         const mergedInspection = {
             ...inspection, ...{ processingLevels: processingLevels }
         }
-
         doTransform(args.sourceFolder, mergedInspection)
-
     }
 
 }
