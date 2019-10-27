@@ -15,7 +15,8 @@
     "@oclif/plugin-help": "^2.2.1",
     "@syncpoint/compact-cache-bundle": "^0.3.0",
     "bluebird": "^3.7.1",
-    "pbf": "^3.2.1"
+    "pbf": "^3.2.1",
+    "proj4": "^2.5.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",
