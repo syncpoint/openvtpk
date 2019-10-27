@@ -10,6 +10,7 @@ const Promise = require('bluebird')
 const VectorTile = require('@mapbox/vector-tile').VectorTile
 
 const content = require('../shared/content')
+const coordinates = require('../shared/coordinates')
 const inspect = require('../shared/inspect')
 const levels = require('../shared/levels')
 const params = require('../shared/params')
@@ -76,10 +77,23 @@ const toVectorLayers = (setOfLayers) => {
  * @returns {Object} contains the metadata required by the MBTiles container
  */
 const tilesetInfo = (rootData, levels, layers) => {
+
+    const getBounds = initialExtent => {
+        const bounds = []
+        // left bottom
+        bounds.push(coordinates.webMercator.xyToLatLng([initialExtent.xmin, initialExtent.ymin]))
+
+        // right top
+        bounds.push(coordinates.webMercator.xyToLatLng([initialExtent.xmax, initialExtent.ymin]))
+
+        return bounds.join(',')
+    }
+
     const info = {
         "name": rootData.name,
         "format": "pbf",
         "version": rootData.currentVersion || 1,
+        "bounds": getBounds(rootData.initialExtent),
         "minzoom": levels.min,
         "maxzoom": levels.max,
         "type": "overlay",
