@@ -20,6 +20,11 @@ const fsClose = Promise.promisify(fs.close)
 const gunzip = Promise.promisify(require('zlib').gunzip)
 
 
+/**
+ * 
+ * @param {String} filepath the fully qualified path and filename for the MBTiles container
+ * @param {String} mode defaults to 'rwc' for read, write, create
+ */
 const createMBTileContainer = (filepath, mode = 'rwc') => {
     return new Promise((resolve, reject) => {
         new MBTiles(`${filepath}?mode=${mode}`, (error, mbTilesWrapper) => {
@@ -182,6 +187,8 @@ class TransformCommand extends Command {
 
 }
 
+TransformCommand.description = `Takes an expanded VTPK container and transforms it into an MBTiles container
+`
 TransformCommand.args = [
     params.args.sourceFolder
 ]
