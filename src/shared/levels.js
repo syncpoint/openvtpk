@@ -23,7 +23,7 @@ const parse = (levelParam) => {
     const max = levelParam.match(maxLevelPattern)
     if (max) {
         const tempMax = matchToInt(max[0])
-        if (tempMax > z.min) { z.max = tempMax }
+        if (tempMax >= z.min) { z.max = tempMax }
     }
 
     return z
