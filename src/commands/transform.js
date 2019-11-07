@@ -84,7 +84,7 @@ const tilesetInfo = (rootData, levels, layers) => {
         bounds.push(coordinates.webMercator.xyToLatLng([initialExtent.xmin, initialExtent.ymin]))
 
         // right top
-        bounds.push(coordinates.webMercator.xyToLatLng([initialExtent.xmax, initialExtent.ymin]))
+        bounds.push(coordinates.webMercator.xyToLatLng([initialExtent.xmax, initialExtent.ymax]))
 
         return bounds.join(',')
     }
