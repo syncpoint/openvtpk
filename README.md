@@ -61,7 +61,7 @@ If you run OpenVTPK multiple times please make sure to remove the existing MBtil
 
 Please use your favorite tile server to view the basemap.at tiles offline. 
 
-### nodejs server
+### @mapbox/mbview
 An easy-to-use option may be [@mapbox/mbview](https://github.com/mapbox/mbview). Just clone the repository and start the tile server
 
 ```javascript
@@ -72,7 +72,7 @@ Open your browser and be a little patient:
 
 ![Offline vector basemap](images/openvtpk-basemap.jpg)
 
-### Docker container klokantech/tileserver-gl
+### klokantech/tileserver-gl (Docker)
 If you prefer using a docker container _tileserver-gl_ can be a good start. Run the following command to start the container within the folder where you stored the mbtiles file:
 
 ```bash
