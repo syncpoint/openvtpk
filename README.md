@@ -21,7 +21,7 @@ OpenVTPK expects the VTPK package to be unzipped into a folder of your choice. P
 ## Installation
 
 ```shell
-  git clone https://github.com/ThomasHalwax/openvtpk.git
+  git clone https://github.com/syncpoint/openvtpk.git
   npm install
 ```
 
