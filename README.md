@@ -1,8 +1,8 @@
 # OpenVTPK
 
-ESRI's Vector Tile Package (VTPK) archive contains vector tiles that follow Mapbox' Vector Tile specification v2.0. In addition all resources to render the tiles are include (i.e. stylesheet, fonts, etc.).
+ESRI's Vector Tile Package (VTPK) archive contains vector tiles that follow Mapbox' Vector Tile specification v2.0. In addition all resources to render the tiles are included (i.e. stylesheet, fonts, etc.).
 
-Unfortunately none of the open source vector tile servers is able to process VTPK packages. Most require either an MBTiles container or an GeoPackage.
+Unfortunately none of the open source vector tile servers is able to process VTPK packages. Most require either an MBTiles container or a GeoPackage.
 
 The aim of OpenVTPK is to extract the tiles from a VTPK and to re-package them into a container that is supported by open source tile servers.
 
@@ -10,7 +10,7 @@ In the first run repackaging from VTPK to MBTiles is supported.
 
 ## Motivation
 
-Austria's government publishes detailed geospatial data like tiles, elevation data etc. at [data.gv.at](https://www.data.gv.at/?s=basemap.at). One can find vector tiles for the [region of Austria](https://www.data.gv.at/katalog/dataset/a73befc7-575f-48cb-8eb9-b05172a8c9e3) in order to use them offline. The publishing format ist VTPK.
+Austria's government publishes detailed geospatial data like vector and raster tiles, elevation data etc. at [data.gv.at](https://www.data.gv.at/?s=basemap.at). One can find vector tiles for the [region of Austria](https://www.data.gv.at/katalog/dataset/a73befc7-575f-48cb-8eb9-b05172a8c9e3) in order to use them offline. The publishing format ist VTPK.
 
 ## What to do before running OpenVTPK
 
@@ -47,13 +47,13 @@ The default value for this flag is ```-l=0..```.
 
 OpenVTPK will 
 
-* create a MBTiles container named after the data in the ```root.json``` file
+* create an MBTiles container named after the data in the ```root.json``` file
 * extract the vector tiles from the VTPK folder
 * extract the layer names
 * write the tiles to the MBTiles container
 * write metadata (including the layer names extracted previously) to the MBTiles container
 
-Depending on the size of your VTPK and the levels to extract running OpenVTPK will take a view minutes.
+Depending on the size of your VTPK and the levels to extract running OpenVTPK will take a few minutes.
 
 If you run OpenVTPK multiple times please make sure to remove the existing MBtiles file.
 
@@ -102,7 +102,7 @@ All the resources required are located in the ```p12/resources``` subfolder of y
 
 Let's create a folder that will become the root folder for _TileServer GL_ (i.e. ```basemap```) and copy the folders ```fonts```, ```styles``` and ```sprites``` from the ```p12/resources``` folder. We do not need the ```infos``` folder. 
 
-Create an additional ```tiles``` folder and put the _mbtiles_ file you want to serve here. Please follow the instructions above in order to repackage the _basemap.at_ VTPK container which we well use in this example.
+Create an additional ```tiles``` folder and put the _mbtiles_ file you want to serve here. Please follow the instructions above in order to repackage the _basemap.at_ VTPK container which we will use in this example.
 
 After that your folder structure should look like this:
 
@@ -167,7 +167,7 @@ Now we are ready to create a configuration file (_config.js_) for _TileServer GL
 }
 ```
 The settings are pretty straight-forward and reflect the folder structure and the files we already used.
-Since the style file ```root.json``` contains path references that are relative to the internal VTPK folder structure we have to edit this file. Open the file and change the values for ```sprite```, ```glyphs``` and ```url``` accordingly. Since we configured _TileServer GL_  to use path prefix' the path must be _relative_ to the associated folders. When you're done your style should contain values as follow:
+Since the style file ```root.json``` contains path references that are relative to the internal VTPK folder structure we have to edit this file. Open the file and change the values for ```sprite```, ```glyphs``` and ```url``` accordingly. Since we configured _TileServer GL_ to use path prefix' the path must be _relative_ to the associated folders. When you're done your style should contain values as follow:
 
 ```JSON
     "sprite": "/sprite",
