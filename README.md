@@ -90,7 +90,7 @@ The provided VTPK container also includes all resources required to style the ve
 * sprites
 * styles 
 
-The _styles_ folder should contain a _JSON_ file that containes styling rules. These rules mus follow the [Mapbox GL Style Specification](https://docs.mapbox.com/mapbox-gl-js/style-spec/).
+The _styles_ folder should contain a _JSON_ file that containes styling rules. These rules must follow the [Mapbox GL Style Specification](https://docs.mapbox.com/mapbox-gl-js/style-spec/).
 
 
 ## Local _basemap.at_ vector tiles with styles applied
