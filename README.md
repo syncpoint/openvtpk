@@ -14,18 +14,39 @@ Austria's government publishes detailed geospatial data like vector and raster t
 
 ## What to do before running OpenVTPK
 
-VTPK packages are zipped archives. You can unzip them by using your favorite software like 7z.
+VTPK packages are zipped archives. You can unzip them by using your favorite software like 7z. For inexperienced users it may be easyer to add the _.zip_ extension to the _.vptk_ file (so you end up with _*.vtpk.zip_).
 
 OpenVTPK expects the VTPK package to be unzipped into a folder of your choice. Later on this folder will be referred to as _SOURCEFOLDER_.
 
 ## Installation
 
+Please note that you need to install at least NodeJS 10 or newer!
+
 ```shell
   git clone https://github.com/syncpoint/openvtpk.git
+```
+In order to install all NodeJS modules required change into the folder ```openvtpk``` and run
+
+```shell
   npm install
 ```
 
 OpenVTPK ist using Heroku's [Open CLI FRamework (OCLIF)](https://github.com/oclif/oclif) in order to provide a professional user experience. After installing OpenVTPK you may run ```bin/run``` to get information about the commands available.
+
+The screenshot below shows all steps required to install and verify OpenVTPK.
+
+![Installation of OpenVTPK](images/openvtpk-installation.png)
+
+## Inspecting an VTPK archive
+
+OpenVTPK is able to inspect an VTPK archive. So one can decide which zoom level to transform.
+
+```shell
+  bin/run inspect SOURCEFOLDER
+```
+
+See the screenshot below as an example for Austria's basemap.at offline vector tiles.
+![inspect VTPK](images/openvtpk-inspect.png)
 
 ## Running a transformation
 
@@ -42,6 +63,10 @@ By setting the flag to ```-l=14..``` all levels from (including) 14 up to
 the maximum level available will be processed.
 
 The default value for this flag is ```-l=0..```.
+
+The screenshot below shows the transformation for the zoom levels 0 to 3. The resulting MBTiles files can be found in the root folder of OpenVTPK.
+
+![transform VTPK](images/openvtpk-transform.png)
 
 ### What you get
 
