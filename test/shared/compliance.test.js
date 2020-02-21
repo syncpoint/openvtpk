@@ -10,3 +10,10 @@ describe('not existing root path', async () => {
     console.dir(result)
     expect(result.isCompliant).to.be.false
 })
+
+describe('file instead of a folder', async () => {
+  const self = 'compliance.test.js'
+  const result = await compliance(self)
+  console.dir(result)
+  expect(result.isCompliant).to.be.false
+})

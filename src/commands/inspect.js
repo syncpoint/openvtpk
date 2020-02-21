@@ -10,6 +10,7 @@ class InspectCommand extends Command {
         const i = await inspect(args.sourceFolder)
         if (!i.compliance.isCompliant) {
             this.warn(`The VTPK package does not comply with the required folder structure`)
+            console.dir(i.compliance)
             this.exit(1)
         }
         console.dir(i)

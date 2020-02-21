@@ -189,7 +189,7 @@ class TransformCommand extends Command {
 
         if (!inspection.compliance.isCompliant) {
             this.error('The given VTPK source folder does not meet the requirements')
-            this.error(inspection.compliance.error)
+            console.dir(inspection.compliance)
             this.exit(1)
         }
 
