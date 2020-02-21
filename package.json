@@ -1,7 +1,7 @@
 {
   "name": "openvtpk",
   "description": "inspect and transform vector tile packages",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": "thomas.halwax@syncpoint.io",
   "bin": {
     "openvtpk": "./bin/run"
@@ -54,7 +54,7 @@
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint .",
     "prepack": "oclif-dev manifest && oclif-dev readme",
-    "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
+    "test": "npx mocha --forbid-only \"test/**/*.test.js\"",
     "version": "oclif-dev readme && git add README.md"
   }
 }
