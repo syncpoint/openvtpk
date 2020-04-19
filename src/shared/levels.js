@@ -5,6 +5,11 @@ const matchToInt = param => {
     return parseInt(val, 10)
 }
 
+/**
+ * 
+ * @param {*} levelParam The commandline parameter for narrowing the levels
+ * @returns {Object} An object with a min and max value 
+ */
 const parse = (levelParam) => {
     const z = {
         min: 0,
@@ -28,5 +33,7 @@ const parse = (levelParam) => {
 
     return z
 }
+
+
 
 module.exports = parse

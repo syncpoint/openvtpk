@@ -11,9 +11,18 @@ const inspect = async (path) => {
         levels: []
       }
     }
+
+    const levels = await content.enumerateLevels(path)
+    const zNumbers = levels.map(level => level.z)
+    const z = {
+      min: Math.min(...zNumbers),
+      max: Math.max(...zNumbers)
+    }
+
     return {
         compliance: compliance,
-        levels: await content.enumerateLevels(path)
+        levels: levels,
+        z
     }
 }
 

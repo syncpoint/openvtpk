@@ -160,8 +160,14 @@ const doWrite = async (tileContainer, levels) => {
  * @param {Object} inspection contains data about the available zoom levels
  */
 const doTransform = async (sourceFolder, inspection) => {
+    /*
+      Min and Max levels are given by the levels within the VTPK AND the 
+      level the user wants to process.
+    */
+    const minLevel = Math.max(inspection.processingLevels.min, inspection.z.min)
+    const maxLevel = Math.min(inspection.processingLevels.max, inspection.z.max)
     // restrict the zoom levels to the given boundarys
-    const levelsToProcess = inspection.levels.filter(level => (level.z >= inspection.processingLevels.min && level.z <= inspection.processingLevels.max))
+    const levelsToProcess = inspection.levels.filter(level => (level.z >= minLevel && level.z <= maxLevel))
 
     const tileRoot = root(sourceFolder)
     const mbtilesName = `${tileRoot.name}.mbtiles`
@@ -171,7 +177,7 @@ const doTransform = async (sourceFolder, inspection) => {
         await tileContainer.startWritingAsync()
         // BAD PRACTICE, should NOT read and write with a single function
         const layers = await doWrite(tileContainer, levelsToProcess)
-        await tileContainer.putInfoAsync(tilesetInfo(tileRoot, inspection.processingLevels, layers))
+        await tileContainer.putInfoAsync(tilesetInfo(tileRoot, { min: minLevel, max: maxLevel } , layers))
         await tileContainer.stopWritingAsync()
     }
     catch (error) {
