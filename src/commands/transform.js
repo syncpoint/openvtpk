@@ -3,7 +3,8 @@
 
 const bundle = require('@syncpoint/compact-cache-bundle')
 const { Command } = require('@oclif/command')
-const fs = require('fs')
+const fsPromises = require('fs').promises
+const { promisify } = require('util')
 const MBTiles = require('@mapbox/mbtiles')
 const Pbf = require('pbf')
 const Promise = require('bluebird')
@@ -16,10 +17,7 @@ const levels = require('../shared/levels')
 const params = require('../shared/params')
 const root = require('../shared/root')
 
-const fsOpen = Promise.promisify(fs.open)
-const fsClose = Promise.promisify(fs.close)
-const gunzip = Promise.promisify(require('zlib').gunzip)
-
+const gunzip = promisify(require('zlib').gunzip)
 
 /**
  * 
@@ -116,14 +114,17 @@ const tilesetInfo = (rootData, levels, layers) => {
  * */
 const writeBundles = async (tileContainer, level) => {
     let bundleLayers = new Set()
+
     const allBundles = content.enumerateBundles(level.folder)
     for (const bundlePath of allBundles) {
+        
         console.log(`processing ${bundlePath}`)
         const bundleOffset = bundle.offset(bundlePath)
-        const bundleFileDescriptor = await fsOpen(bundlePath, 'r')
-        const tileIndex = await bundle.tileIndex(bundleFileDescriptor)
+        const bundleFileHandle = await fsPromises.open(bundlePath, 'r')
+        const tileIndex = await bundle.tileIndex(bundleFileHandle.fd)
+
         for (const index of tileIndex) {
-            const tile = await bundle.tiles(bundleFileDescriptor, index)
+            const tile = await bundle.tiles(bundleFileHandle.fd, index)
             // write tile to tile container
             const row = bundleOffset.rowOffset + index.row
             const column = bundleOffset.columnOffset + index.column
@@ -133,7 +134,7 @@ const writeBundles = async (tileContainer, level) => {
             bundleLayers = new Set([...bundleLayers, ...tileLayers])
         }
 
-        await fsClose(bundleFileDescriptor)
+        await bundleFileHandle.close()
     }
     return bundleLayers
 }
