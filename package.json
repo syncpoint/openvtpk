@@ -8,7 +8,7 @@
   },
   "bugs": "https://github.com/ThomasHalwax/openvtpk/issues",
   "dependencies": {
-    "@mapbox/mbtiles": "^0.11.0",
+    "@mapbox/mbtiles": "^0.12.1",
     "@mapbox/vector-tile": "^1.3.1",
     "@oclif/command": "^1.8.0",
     "@oclif/config": "^1.17.0",
